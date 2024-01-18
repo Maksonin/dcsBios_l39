@@ -1,44 +1,74 @@
 /*
-  Tell DCS-BIOS to use a serial connection and use interrupt-driven
-  communication. The main program will be interrupted to prioritize
-  processing incoming data.
-  
-  This should work on any Arduino that has an ATMega328 controller
-  (Uno, Pro Mini, many others).
+  Test DCS-BIOS whith LCD ST7920
  */
+
 #define DCSBIOS_IRQ_SERIAL
 
-#include <U8g2lib.h>
-#include <SPI.h>
-U8G2_ST7920_128X64_1_SW_SPI u8g2(U8G2_R2, /* clock=*/ 13, /* data=*/ 11, /* cs=*/ 10);
-
-//#include <Wire.h> 
-//#include <LiquidCrystal_I2C.h>
-//LiquidCrystal_I2C lcd(0x3F,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
-
-#define switchMod 0
-
 #include "DcsBios.h"
-//#include "l39.h"
-//#include "y52.h"
+#include <PinChangeInterrupt.h>
+#include "soiL39.h"
+#include <SPI.h>
+
+#include <GyverTimers.h>
+
+#define DEMO 1 // активация автоматической генерации параметров для структур данных (прерывание по таймеру 1)
+
+Display soi(3);
 
 void setup() {
+  pinMode(7, INPUT_PULLUP);
+  attachPCINT(digitalPinToPCINT(7), kadrNumAdd, FALLING);
+
+  #if (DEMO==1)
+    Timer1.setFrequency(3);
+    Timer1.enableISR();
+  #endif
+
   DcsBios::setup();
-  u8g2.begin(); 
-  u8g2.firstPage();
-  do {
-    u8g2.drawFrame(0,0,128,64);
-    u8g2.setFont(u8g2_font_5x8_t_cyrillic );
-    u8g2.drawStr(30,8,"DCS-BIOS L39");
-    u8g2.drawStr(2,16,"Radio channel: ");
-    u8g2.drawStr(2,24,"RSBN nav: ");
-    u8g2.drawStr(2,32,"RSBN land: ");
-  } while ( u8g2.nextPage() );
+  soi.init();
+}
+
+// Прерывание А таймера 1 (тестовое заполнение структуры данных)
+ISR(TIMER1_A) {  // пишем  в сериал
+  soi.radioData.radioCh < 20 ? soi.radioData.radioCh++ : soi.radioData.radioCh = 0;
+  soi.radioData.rsbnCh < 40  ? soi.radioData.rsbnCh++  : soi.radioData.rsbnCh = 0;
+  soi.radioData.bprmCh < 999 ? soi.radioData.bprmCh++  : soi.radioData.bprmCh = 0;
+  soi.radioData.dprmCh < 999 ? soi.radioData.dprmCh++  : soi.radioData.bprmCh = 0;
+
+  soi.uprData.gears ^= 1;
+  soi.uprData.speedBreak ^= 1;
+  soi.uprData.flaps < 3 ? soi.uprData.flaps++ : soi.uprData.flaps = 0;
+}
+
+// обработчик прерывания PCINT GPIO7
+void kadrNumAdd(void) {
+  soi.nextKadr();
 }
 
 void loop() {
   DcsBios::loop();
-
-
+  soi.setKadr();
 }
 
+
+/* ********************************************************************** */
+// DcsBios::Switch2Pos frontFlaps0("FRONT_FLAPS_0", 6);
+// DcsBios::LED frontFlapsUpLamp(0x332c, 0x1000, 2);
+
+// DcsBios::Switch2Pos frontFlaps25("FRONT_FLAPS_25", 7);
+// DcsBios::LED frontFlapsToLamp(0x332c, 0x2000, 3);
+
+// DcsBios::Switch2Pos frontFlaps44("FRONT_FLAPS_44", 8);
+// DcsBios::LED frontFlapsDnLamp(0x332c, 0x4000, 4);
+
+//DcsBios::RotaryEncoder frontRadioChn("FRONT_RADIO_CHN", "DEC", "INC", 9, 8);
+
+void onBackRadioChnDisplayChange(unsigned int newValue) {
+  soi.radioData.radioCh = newValue;
+}
+DcsBios::IntegerBuffer backRadioChnDisplayBuffer(0x33ce, 0x007f, 0, onBackRadioChnDisplayChange);
+
+void onFrontRsbnChanNavDisplayChange(unsigned int newValue) {
+  soi.radioData.rsbnCh = newValue;
+}
+DcsBios::IntegerBuffer frontRsbnChanNavDisplayBuffer(0x33c4, 0x1fc0, 6, onFrontRsbnChanNavDisplayChange);
