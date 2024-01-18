@@ -85,7 +85,6 @@ void Display::uprKadr(){
 
   // ** ЗАКРЫЛКИ **
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
-  
   //uprData.flaps = 1;
   if(uprData.flaps > 0 && uprData.flaps < 3){
     u8g2.drawUTF8(15,42,"ВЗЛ_");
@@ -105,7 +104,6 @@ void Display::uprKadr(){
     }
   }
 
-
   // ** ТРИММЕРЫ **
   u8g2.drawLine(64,5,120,5); // триммер по крену
   u8g2.drawLine(92,3,92,5); // центр триммера по крену
@@ -116,4 +114,8 @@ void Display::uprKadr(){
   u8g2.drawGlyph(88, 13, 0x25b4); // положение триммера по крену
   u8g2.drawGlyph(115, 38, 0x25ba); // положение триммера по тангажу
 
+  // ** СИГНАЛЫ **
+  u8g2.setFont(u8g2_font_5x7_t_cyrillic);
+  u8g2.drawUTF8(3,10,"ШАССИ МОЖНО");
+  u8g2.drawUTF8(3,18,"ЗКРЛК МОЖНО");
 }
