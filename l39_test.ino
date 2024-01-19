@@ -20,7 +20,7 @@ void setup() {
   attachPCINT(digitalPinToPCINT(7), kadrNumAdd, FALLING);
 
   #if (DEMO==1)
-    Timer1.setFrequency(3);
+    Timer1.setFrequency(1);
     Timer1.enableISR();
   #endif
 
