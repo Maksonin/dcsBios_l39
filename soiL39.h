@@ -19,6 +19,11 @@ class Display {
     void uprKadr();
 
     struct {
+      int speed;
+      int height;
+    } shData;
+
+    struct {
       int radioCh;
       int rsbnCh;
       int rsbnRezh;

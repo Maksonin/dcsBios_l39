@@ -29,11 +29,13 @@ void Display::helloKadr(){
   u8g2.drawStr(1,15,"Hello World!");
 }
 
+// ****** ФОРМИРОВАНИЕ КАДРА НАВИГАЦИЯ ****** 
 void Display::navKadr(){
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
   u8g2.drawUTF8(25,10,"--НАВИГАЦИЯ--");
 }
 
+// ****** ФОРМИРОВАНИЕ КАДРА РАДИО ****** 
 void Display::radioKadr(){
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
   // u8g2.drawUTF8(37,10,"--РАДИО--");
@@ -58,17 +60,19 @@ void Display::radioKadr(){
   u8g2.setCursor(100,60);u8g2.print(radioData.dprmCh);
 }
 
+// ****** ФОРМИРОВАНИЕ КАДРА УПР ****** 
 void Display::uprKadr(){
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
   //u8g2.drawUTF8(20,10,"--МЕХАНИЗАЦИЯ--");
-  u8g2.drawEllipse(64, 32, 10, 10); // фюзеляж
-  u8g2.drawLine(20,32,54,32); // левое крыло
-  u8g2.drawLine(74,32,108,32); // правое крыло
+  u8g2.drawEllipse(64, 32, 7, 7); // фюзеляж
+  u8g2.drawLine(64,25,64,15);
+  u8g2.drawLine(20,32,57,32); // левое крыло
+  u8g2.drawLine(71,32,108,32); // правое крыло
 
   // ** ШАССИ **
   if(uprData.gears){
     // носовая стойка шасси
-    u8g2.drawLine(64,42,64,50);
+    u8g2.drawLine(64,39,64,50);
     u8g2.drawBox(63,50,3,6);  
     // левая стойка шасси
     u8g2.drawLine(52,32,52,50);
@@ -78,9 +82,10 @@ void Display::uprKadr(){
     u8g2.drawBox(75,50,3,6);
   }
 
+  // ** ВОЗДУШНЫЙ ТОРМОЗ **
   if(uprData.speedBreak){
     // воздушный тормоз
-    u8g2.drawBox(60,42,9,6);
+    u8g2.drawBox(60,39,9,6);
   }
 
   // ** ЗАКРЫЛКИ **
@@ -111,11 +116,24 @@ void Display::uprKadr(){
   u8g2.drawLine(123,32,125,32); // центр триммера по тангажу
 
   u8g2.setFont(u8g2_font_unifont_t_symbols);
-  u8g2.drawGlyph(60, 13, 0x25b4); // положение триммера по крену
-  u8g2.drawGlyph(115, 38, 0x25ba); // положение триммера по тангажу
+  u8g2.drawGlyph(60, 13, 0x25b4); // символ положения триммера по крену
+  u8g2.drawGlyph(115, 38, 0x25ba); // символ положения триммера по тангажу
 
-  // ** СИГНАЛЫ **
-  u8g2.setFont(u8g2_font_5x7_t_cyrillic);
-  //u8g2.drawUTF8(3,10,"ШАССИ МОЖНО");
-  //u8g2.drawUTF8(3,18,"ЗКРЛК МОЖНО");
+  // ** СИГНАЛЫ ШАССИ/ЗАКРЫЛКИ **
+  //u8g2.setFont(u8g2_font_5x7_t_cyrillic);
+  u8g2.setFont(u8g2_font_6x12_t_cyrillic);
+  if((!uprData.flaps) && (shData.speed < 300)){ // формирование сигнала о разрешении выпуска закрылков на скорости меньше 300
+    u8g2.drawUTF8(3,20,"ЗКРЛК"); 
+    u8g2.drawUTF8(3,29,"МОЖНО");
+  }
+  if((!uprData.gears) && (shData.speed < 350)){ // формирование сигнала о разрешении выпуска шасси на скорости меньше 350
+    u8g2.drawUTF8(50,53,"ШАССИ");
+    u8g2.drawUTF8(50,62,"МОЖНО");
+  }
+
+  // ** СКОРОСТЬ/ВЫСОТА **
+  u8g2.drawUTF8(74,20,"S:");
+  u8g2.setCursor(86,20);u8g2.print(shData.speed); // вывод скорости
+  u8g2.drawUTF8(74,29,"H:");
+  u8g2.setCursor(86,29);u8g2.print(shData.height); // вывод скорости
 }

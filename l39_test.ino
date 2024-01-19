@@ -20,7 +20,7 @@ void setup() {
   attachPCINT(digitalPinToPCINT(7), kadrNumAdd, FALLING);
 
   #if (DEMO==1)
-    Timer1.setFrequency(1);
+    Timer1.setFrequency(2);
     Timer1.enableISR();
   #endif
 
@@ -30,6 +30,10 @@ void setup() {
 
 // Прерывание А таймера 1 (тестовое заполнение структуры данных)
 ISR(TIMER1_A) {  // пишем  в сериал
+  
+  soi.shData.speed < 999 ? soi.shData.speed += 100 : soi.shData.speed = 0;
+  soi.shData.height < 10999 ? soi.shData.height += 100 : soi.shData.height = 0;
+
   soi.radioData.radioCh < 20 ? soi.radioData.radioCh++ : soi.radioData.radioCh = 0;
   soi.radioData.rsbnCh < 40  ? soi.radioData.rsbnCh++  : soi.radioData.rsbnCh = 0;
   soi.radioData.bprmCh < 999 ? soi.radioData.bprmCh++  : soi.radioData.bprmCh = 0;
