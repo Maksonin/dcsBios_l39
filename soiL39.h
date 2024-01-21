@@ -4,7 +4,7 @@
 
 class Display {
   private:
-    U8G2_ST7920_128X64_F_SW_SPI u8g2 {U8G2_R0, 13, 11, 10};
+    U8G2_ST7920_128X64_F_SW_SPI u8g2 {U8G2_R2, 13, 11, 10};
     uint8_t _kadrNum = 0;
     uint8_t _kadr = 2;
   public:
@@ -33,7 +33,12 @@ class Display {
 
     struct {
       int flaps;
-      int gears;
-      int speedBreak;
+      int flapsUp;
+      int flapsV;
+      int flapsP;
+      int gearR;
+      int gearN;
+      int gearL;
+      int airBreak;
     } uprData;
 };
