@@ -25,14 +25,14 @@ void Display::nextKadr(){
 }
 
 void Display::helloKadr(){
-  u8g2.setFont(u8g2_font_ncenB10_tr);
-  u8g2.drawStr(1,15,"Hello World!");
+  // u8g2.setFont(u8g2_font_ncenB10_tr);
+  // u8g2.drawStr(1,15,"Hello World!");
 }
 
 // ****** ФОРМИРОВАНИЕ КАДРА НАВИГАЦИЯ ****** 
 void Display::navKadr(){
-  u8g2.setFont(u8g2_font_6x12_t_cyrillic);
-  u8g2.drawUTF8(25,10,"--НАВИГАЦИЯ--");
+  // u8g2.setFont(u8g2_font_6x12_t_cyrillic);
+  // u8g2.drawUTF8(25,10,"--НАВИГАЦИЯ--");
 }
 
 // ****** ФОРМИРОВАНИЕ КАДРА РАДИО ****** 
@@ -132,11 +132,10 @@ void Display::uprKadr(){
   // ** СИГНАЛЫ ШАССИ/ЗАКРЫЛКИ **
   //u8g2.setFont(u8g2_font_5x7_t_cyrillic);
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
-  if((!uprData.flaps) && (shData.speed < 300)){ // формирование сигнала о разрешении выпуска закрылков на скорости меньше 300
+  if((!uprData.flapsUp) && (!uprData.flapsV) && (!uprData.flapsP) && (shData.speed < 300)){ // формирование сигнала о разрешении выпуска закрылков на скорости меньше 300
     u8g2.drawUTF8(3,20,"ЗКРЛК"); 
     u8g2.drawUTF8(3,29,"МОЖНО");
-  u8g2.setCursor(3,20);u8g2.print(uprData.flapsUp); u8g2.print(uprData.flapsV); u8g2.print(uprData.flapsP); 
-  // }
+  }
   if((!uprData.gearL) && (!uprData.gearN) && (!uprData.gearR) && (shData.speed < 350)){ // формирование сигнала о разрешении выпуска шасси на скорости меньше 350
     u8g2.drawUTF8(50,53,"ШАССИ");
     u8g2.drawUTF8(50,62,"МОЖНО");
@@ -145,7 +144,6 @@ void Display::uprKadr(){
   // ** СКОРОСТЬ/ВЫСОТА **
   u8g2.drawUTF8(74,20,"S:");
   u8g2.setCursor(86,20); u8g2.print(shData.speed); // вывод скорости
-  //u8g2.print(uprData.flapsUp); u8g2.print(uprData.flapsV); u8g2.print(uprData.flapsP); 
   u8g2.drawUTF8(74,29,"H:");
-  u8g2.setCursor(86,29);u8g2.print(shData.height); // вывод высоты
+  u8g2.setCursor(86,29);u8g2.print((int)(shData.height * 0.3048)); // вывод высоты
 }
