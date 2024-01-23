@@ -53,8 +53,12 @@ void kadrNumAdd(void) {
 
 void loop() {
   DcsBios::loop();
+  
+  noInterrupts(); // отключение прерываний на время формирования изображения
+
   soi.setKadr();
-}
+
+  interrupts(); // включение прерываний
 
 
 /* ********************************************************************** */
@@ -88,20 +92,23 @@ DcsBios::IntegerBuffer frontRsbnModeBuffer(0x335c, 0x0006, 1, onFrontRsbnModeCha
 /* **************************************** */
 /* Закрылки */
 
-// void onFrontFlapsUpLampChange(unsigned int newValue) {
-//   soi.uprData.flapsUp = newValue;
-// }
-// DcsBios::IntegerBuffer frontFlapsUpLampBuffer(0x332c, 0x1000, 12, onFrontFlapsUpLampChange);
+// состояние лампы "Закрылки убраны"
+void onFrontFlapsUpLampChange(unsigned int newValue) {
+  soi.uprData.flapsUp = newValue;
+}
+DcsBios::IntegerBuffer frontFlapsUpLampBuffer(0x332c, 0x1000, 12, onFrontFlapsUpLampChange);
 
-// void onFrontFlapsToLampChange(unsigned int newValue) {
-//   soi.uprData.flapsV = newValue;
-// }
-// DcsBios::IntegerBuffer frontFlapsToLampBuffer(0x332c, 0x2000, 13, onFrontFlapsToLampChange);
+// состояние лампы "Закрылки во взлётном положении"
+void onFrontFlapsToLampChange(unsigned int newValue) {
+  soi.uprData.flapsV = newValue;
+}
+DcsBios::IntegerBuffer frontFlapsToLampBuffer(0x332c, 0x2000, 13, onFrontFlapsToLampChange);
 
-// void onFrontFlapsDnLampChange(unsigned int newValue) {
-//     soi.uprData.flapsP = newValue;
-// }
-// DcsBios::IntegerBuffer frontFlapsDnLampBuffer(0x332c, 0x4000, 14, onFrontFlapsDnLampChange);
+// состояние лампы "Закрылки в посадочном положении"
+void onFrontFlapsDnLampChange(unsigned int newValue) {
+    soi.uprData.flapsP = newValue;
+}
+DcsBios::IntegerBuffer frontFlapsDnLampBuffer(0x332c, 0x4000, 14, onFrontFlapsDnLampChange);
 
 /* **************************************** */
 /* Шасси правое */

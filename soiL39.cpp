@@ -101,23 +101,23 @@ void Display::uprKadr(){
   // ** ЗАКРЫЛКИ **
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
   //uprData.flaps = 1;
-  // if((uprData.flapsV) || (uprData.flapsP)){
-  //   u8g2.drawUTF8(15,42,"ВЗЛ_");
-  //   u8g2.drawUTF8(15,52,"ПОС_");
-  //   u8g2.drawFrame(33,32,6,22); // левые закрылки
-  //   u8g2.drawFrame(91,32,6,22); // правые закрылки
+  if((uprData.flapsV) || (uprData.flapsP)){
+    u8g2.drawUTF8(15,42,"ВЗЛ_");
+    u8g2.drawUTF8(15,52,"ПОС_");
+    u8g2.drawFrame(33,32,6,22); // левые закрылки
+    u8g2.drawFrame(91,32,6,22); // правые закрылки
 
-  //   if(uprData.flapsV){
-  //     // закрылки взлет
-  //     u8g2.drawBox(33,32,6,12);
-  //     u8g2.drawBox(91,32,6,12);
-  //   }
-  //   if(uprData.flapsP){
-  //     // закрылки посадка
-  //     u8g2.drawBox(33,32,6,22);
-  //     u8g2.drawBox(91,32,6,22);
-  //   }
-  // }
+    if(uprData.flapsV){
+      // закрылки взлет
+      u8g2.drawBox(33,32,6,12);
+      u8g2.drawBox(91,32,6,12);
+    }
+    else if(uprData.flapsP){
+      // закрылки посадка
+      u8g2.drawBox(33,32,6,22);
+      u8g2.drawBox(91,32,6,22);
+    }
+  }
 
   // ** ТРИММЕРЫ **
   u8g2.drawLine(34,5,94,5); // триммер по крену
@@ -132,9 +132,9 @@ void Display::uprKadr(){
   // ** СИГНАЛЫ ШАССИ/ЗАКРЫЛКИ **
   //u8g2.setFont(u8g2_font_5x7_t_cyrillic);
   u8g2.setFont(u8g2_font_6x12_t_cyrillic);
-  // if((!uprData.flaps) && (shData.speed < 300)){ // формирование сигнала о разрешении выпуска закрылков на скорости меньше 300
-  //   u8g2.drawUTF8(3,20,"ЗКРЛК"); 
-  //   u8g2.drawUTF8(3,29,"МОЖНО");
+  if((!uprData.flaps) && (shData.speed < 300)){ // формирование сигнала о разрешении выпуска закрылков на скорости меньше 300
+    u8g2.drawUTF8(3,20,"ЗКРЛК"); 
+    u8g2.drawUTF8(3,29,"МОЖНО");
   u8g2.setCursor(3,20);u8g2.print(uprData.flapsUp); u8g2.print(uprData.flapsV); u8g2.print(uprData.flapsP); 
   // }
   if((!uprData.gearL) && (!uprData.gearN) && (!uprData.gearR) && (shData.speed < 350)){ // формирование сигнала о разрешении выпуска шасси на скорости меньше 350
@@ -147,5 +147,5 @@ void Display::uprKadr(){
   u8g2.setCursor(86,20); u8g2.print(shData.speed); // вывод скорости
   //u8g2.print(uprData.flapsUp); u8g2.print(uprData.flapsV); u8g2.print(uprData.flapsP); 
   u8g2.drawUTF8(74,29,"H:");
-  u8g2.setCursor(86,29);u8g2.print(shData.height); // вывод скорости
+  u8g2.setCursor(86,29);u8g2.print(shData.height); // вывод высоты
 }
